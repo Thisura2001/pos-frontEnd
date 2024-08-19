@@ -19,14 +19,13 @@ const addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/; // Letters, digits, and some spe
     function appendCustomersToTable(customers) {
         $('#CustomerTableBody').empty(); // Clear existing rows
         customers.forEach(function(customer) {
-            var newRow = `
-                        <tr>
+            var newRow = ` <tr>
                             <td>${customer.id}</td>
                             <td>${customer.name}</td>
                             <td>${customer.salary}</td>
                             <td>${customer.address}</td>
-                        </tr>
-                    `;
+                        </tr>`
+            ;
             $('#CustomerTableBody').append(newRow);
         });
         // Add click event listener to table rows
@@ -127,6 +126,8 @@ $("#btnCustomerSave").on('click', () => {
                     icon: 'success',
                     title: 'Customer Deleted Successfully'
                 });
+                clearFields();
+                loadCustomers();
             },
             error: function (error) {
                 console.log(error);
@@ -199,6 +200,8 @@ $("#btnCustomerSave").on('click', () => {
                     icon: 'success',
                     title: 'Customer Updated Successfully',
                 });
+                clearFields();
+                loadCustomers();
             },
             error: function (error) {
                 console.log(error);

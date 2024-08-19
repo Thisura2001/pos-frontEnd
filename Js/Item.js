@@ -2,6 +2,44 @@ const itemCodeRegex = /^\d+$/;
 const itemNameRegex = /^[a-zA-Z\s]+$/;
 const priceRegex = /^[\d.\s]+$/;
 const qtyRegex = /^[\d\s]+$/;
+
+function loadItemTable() {
+    $.ajax({
+        url:"http://localhost:8080/item",
+        type:"GET",
+        contentType:"application/json",
+
+        success:function (success){
+            appendItems(success);
+        },
+        error:function (error){
+            console.error(error);
+        }
+    });
+}
+function appendItems(items) {
+    $("#itemTableBody").empty();
+    items.forEach(function (item) {
+        var row = `<tr>
+                    <td>${item.code}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.price}</td>
+                    <td>${item.qty}</td>
+        </tr>`;
+        $('#itemTableBody').append(row);
+    });
+    $("#itemTableBody").on('click','tr',function (){
+        let code = $(this).find('td:first').text();
+        let itemName = $(this).find('td:nth-child(2)').text();
+        let price = $(this).find('td:nth-child(3)').text();
+        let qty = $(this).find('td:nth-child(4)').text();
+
+        $("#Item_id").val(code);
+        $("#item_Name").val(itemName);
+        $("#item_Price").val(price);
+        $("#itemQuantity").val(qty);
+    })
+}
 $("#btnItemSave").on('click', () => {
     let itemCode = $("#Item_id").val();
     let itemName = $("#item_Name").val();
@@ -61,6 +99,8 @@ $("#btnItemSave").on('click', () => {
                icon:'success',
                title:'item added successfully'
            })
+            loadItemTable();
+           clearFields();
             console.log(result)
         },
         error:function (error) {
@@ -82,7 +122,9 @@ $("#itemBtnDelete").on('click',()=>{
                 icon:'success',
                 title:'item deleted successfully'
             })
-            console.log(result)
+            console.log(result);
+            loadItemTable();
+            clearFields();
         },
         error:function (error) {
             swal.fire({
@@ -155,6 +197,8 @@ $("#btnItemUpdate").on('click',()=>{
                 title:'item updated successfully'
             })
             console.log(result)
+            loadItemTable();
+            clearFields();
         },
         error:function (error) {
             swal.fire({
@@ -167,3 +211,10 @@ $("#btnItemUpdate").on('click',()=>{
     });
 
 });
+function clearFields() {
+    $("#Item_id").val("");
+    $("#item_Name").val("");
+    $("#item_Price").val("");
+    $("#itemQuantity").val("");
+}
+window.onload = loadItemTable();
