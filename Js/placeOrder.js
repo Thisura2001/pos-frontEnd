@@ -1,5 +1,6 @@
 window.onload = function() {
    cmbCustomer();
+   cmbItem();
 }
 //
 // function setOrderID() {
@@ -18,7 +19,7 @@ window.onload = function() {
 // }
 function cmbCustomer() {
     $.ajax({
-        url: "http://localhost:8080/customer", // Adjust URL to point to your servlet
+        url: "http://localhost:8080/customer",
         type: "GET",
         success: function(response) {
             console.log(response); // Log the entire response to check its structure
@@ -34,7 +35,7 @@ function cmbCustomer() {
             if (Array.isArray(response)) {
                 response.forEach(function(customer) {
                     console.log(customer); // Log each customer object to verify its structure
-                    let customerId = customer.customerId || customer.id; // Adjust the property name based on your data
+                    let customerId =customer.id;
                     let option = $('<option>').val(customerId).text(customerId);
                     $('#selectCus_ID').append(option);
                 });
@@ -47,3 +48,63 @@ function cmbCustomer() {
         }
     });
 }
+function cmbItem() {
+    $.ajax({
+        url: "http://localhost:8080/item",
+        method: "GET",
+        success: function(response) {
+            console.log(response);
+
+            $("#select").empty();
+            const defaultOption = document.createElement("option");
+            defaultOption.text = "Select Item ID";
+            $('#select').append(defaultOption);
+
+            if (Array.isArray(response)) {
+                response.forEach(function(item) {
+                    console.log(item);
+                    let itemId = item.code; // Ensure 'code' matches the key in the response
+                    let option = $('<option>').val(itemId).text(itemId);
+                    $("#select").append(option);
+                });
+            } else {
+                console.error("Expected an array but got:", response);
+            }
+        },
+        error: function(error) {
+            console.error("Error fetching items:", error);
+        }
+    });
+}
+
+$("#select").on('change', function() {
+    const selectedItemCode = $(this).val(); // Get the selected item code
+    console.log("Selected Item Code:", selectedItemCode);
+
+    if (selectedItemCode) {
+        $.ajax({
+            url: `http://localhost:8080/items?code=${selectedItemCode}`, // Ensure the query parameter name matches
+            method: "GET",
+            success: function(response) {
+                console.log("Item details response:", response);
+
+                // Update the fields with the item details
+                $("#itemName").val(response.itemName || ""); // Use .text() for <h5> elements
+                $("#itemPrice").val(response.price || ""); // Use .text() for <h5> elements
+                $("#itemQut").val(response.qty || ""); // Use .text() for <h5> element
+            },
+            error: function(error) {
+                console.error("Error fetching item details:", error);
+                // Clear the fields if there's an error
+                // $("#itemName").text("");
+                // $("#itemQut").text("");
+                // $("#itemPrice").text("");
+            }
+        });
+    } else {
+        // Clear the fields if no item is selected
+        // $("#itemName").text("");
+        // $("#itemQut").text("");
+        // $("#itemPrice").text("");
+    }
+});
