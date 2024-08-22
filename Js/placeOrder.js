@@ -83,7 +83,7 @@ $("#select").on('change', function() {
 
     if (selectedItemCode) {
         $.ajax({
-            url: `http://localhost:8080/items?code=${selectedItemCode}`, // Ensure the query parameter name matches
+            url: `http://localhost:8080/items?code=${selectedItemCode}`,
             method: "GET",
             success: function(response) {
                 console.log("Item details response:", response);
