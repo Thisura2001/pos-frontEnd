@@ -86,12 +86,12 @@ $("#select").on('change', function() {
             url: `http://localhost:8080/items?code=${selectedItemCode}`,
             method: "GET",
             success: function(response) {
-                console.log("Item details response:", response);
+                console.log( response);
 
                 // Update the fields with the item details
-                $("#itemName").val(response.itemName || ""); // Use .text() for <h5> elements
-                $("#itemPrice").val(response.price || ""); // Use .text() for <h5> elements
-                $("#itemQut").val(response.qty || ""); // Use .text() for <h5> element
+                $("#itemName").text(response.itemName || ""); // Use .text() for <h5> elements
+                $("#itemPrice").text(response.price || ""); // Use .text() for <h5> elements
+                $("#itemQut").text(response.qty || ""); // Use .text() for <h5> element
             },
             error: function(error) {
                 console.error("Error fetching item details:", error);
@@ -106,5 +106,92 @@ $("#select").on('change', function() {
         // $("#itemName").text("");
         // $("#itemQut").text("");
         // $("#itemPrice").text("");
+    }
+});
+$(document).ready(function() {
+    $("#btnAdd").on('click', function() {
+        let item_id = $("#select").val();                      // Get selected item ID
+        let item_name = $("#itemName").text();                 // Get item name
+        let quantity = parseInt($("#quantity_placeOrder").val()); // Get quantity entered
+        let unit_price = parseFloat($("#itemPrice").text());   // Get item price
+        let available_qty = parseInt($("#itemQut").text());    // Get available quantity
+
+        if (!item_id || isNaN(quantity) || quantity <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Input',
+                text: 'Please select an item and enter a valid quantity.'
+            });
+            return;
+        }
+
+        if (quantity > available_qty) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Insufficient Stock',
+                text: `Only ${available_qty} units available.`
+            });
+            return;
+        }
+
+        let total = quantity * unit_price;
+        let discount = total * 0.20;
+        let total_price = total - discount;
+
+        let existingRow = $(`#placeOrder-tbody tr[data-item-id="${item_id}"]`);
+
+        if (existingRow.length) {
+            let existingQuantity = parseInt(existingRow.find('.quantity').text());
+            let newQuantity = existingQuantity + quantity;
+            let newTotal = newQuantity * unit_price;
+
+            existingRow.find('.quantity').text(newQuantity);
+            existingRow.find('.price').text(newTotal.toFixed(2));
+        } else {
+            let record = `
+                <tr data-item-id="${item_id}">
+                    <td class="item_id">${item_id}</td>
+                    <td class="item_price">${unit_price.toFixed(2)}</td>
+                    <td class="quantity">${quantity}</td>
+                    <td class="price">${total_price.toFixed(2)}</td>
+                    <td class="button">
+                        <button class="removeButton" type="button">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+
+            $("#placeOrder-tbody").append(record);
+        }
+
+        updateNetTotal();
+
+        // Clear the input fields after adding the item
+        ClearFields();
+    });
+
+    function updateNetTotal() {
+        let netTot = 0;
+        $("#placeOrder-tbody tr").each(function() {
+            netTot += parseFloat($(this).find('.price').text());
+        });
+
+        $("#tot").text(netTot.toFixed(2));
+        $("#dis").text(`The amount saved by the 20% discount: = Rs.${(netTot * 0.20).toFixed(2)}`);
+        $("#final").text(`New Total Rs: ${(netTot - (netTot * 0.20)).toFixed(2)}`);
+    }
+
+    // Event delegation for dynamically added remove buttons
+    $("#placeOrder-tbody").on("click", ".removeButton", function() {
+        $(this).closest('tr').remove();
+        updateNetTotal();
+    });
+
+    function ClearFields() {
+        $("#select").val('');
+        $("#quantity_placeOrder").val('');
+        $('#itemName').text("______________________________");
+        $('#itemQut').text("_____________");
+        $('#itemPrice').text("___________");
     }
 });
