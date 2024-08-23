@@ -2,21 +2,26 @@ window.onload = function() {
    cmbCustomer();
    cmbItem();
 }
-//
-// function setOrderID() {
-//     $.ajax({
-//         url: "http://localhost:8080/orders", // Adjust URL to point to your servlet
-//         type: "GET",
-//         success: function(response) {
-//             // Set the generated orderId in the text field
-//             response.orderId = undefined;
-//             $("#Order_id").val(response.orderId);
-//         },
-//         error: function(error) {
-//             console.error("Error generating orderId:", error);
-//         }
-//     });
-// }
+
+function fetchOrderId() {
+    $.ajax({
+        url: "http://localhost:8080/orders", // Replace with your server URL
+        method: "GET",
+        success: function(response) {
+            // Assuming response is in the format: { "orderId": "OR-100" }
+            $("#Order_id").val(response.orderId);
+        },
+        error: function(error) {
+            console.error("Error fetching order ID:", error);
+        }
+    });
+}
+
+// Call this function when the page loads or when needed
+$(document).ready(function() {
+    fetchOrderId();
+});
+
 function cmbCustomer() {
     $.ajax({
         url: "http://localhost:8080/customer",
