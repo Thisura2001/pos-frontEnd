@@ -179,7 +179,45 @@ $(document).ready(function() {
         $(this).closest('tr').remove();
         updateNetTotal();
     });
+    //place order
+    $("#place_Order").on('click',function (){
+        let amount = parseFloat($('#amount').val());
+        let netTotal = parseFloat($('#tot').text());
+        let discount = netTotal * 0.20; // Calculate 20% discount
+        let order_id = $("#Order_id").val();
+        let finalTotal = netTotal - discount; // Calculate final total after discount
 
+        const orderData ={
+            orderId:order_id,
+            amount:amount,
+            netTotal:netTotal,
+            discount:discount,
+            finalTotal:finalTotal
+        }
+        const orderJson = JSON.stringify(orderData);
+
+
+        $.ajax({
+            url:`http://localhost:8080/orders`,
+            method:"POST",
+            data:orderJson,
+            contentType: "application/json",
+            success:function (response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'order saved'
+                });
+                console.log(response);
+            },
+            error:function (error){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'error saving order'
+                });
+                console.log(error);
+            }
+        })
+    })
 
     function ClearFields() {
         $("#select").val('');
