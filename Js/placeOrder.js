@@ -86,28 +86,30 @@ $("#select").on('change', function() {
             url: `http://localhost:8080/items?code=${selectedItemCode}`,
             method: "GET",
             success: function(response) {
-                console.log( response);
+                console.log(response);  // Check what the structure of the response is
 
-                // Update the fields with the item details
-                $("#itemName").text(response.itemName || ""); // Use .text() for <h5> elements
-                $("#itemPrice").text(response.price || ""); // Use .text() for <h5> elements
-                $("#itemQut").text(response.qty || ""); // Use .text() for <h5> element
+                // Ensure that the response structure matches what you're expecting
+                // For example, if the response is an object like {itemName: "Item A", price: 100.00, qty: 5}
+                $("#itemName").text(response.itemName || "N/A");
+                $("#itemPrice").text(response.price !== undefined ? response.price : "N/A");
+                $("#itemQut").text(response.qty !== undefined ? response.qty : "N/A");
             },
             error: function(error) {
                 console.error("Error fetching item details:", error);
                 // Clear the fields if there's an error
-                // $("#itemName").text("");
-                // $("#itemQut").text("");
-                // $("#itemPrice").text("");
+                $("#itemName").text("N/A");
+                $("#itemPrice").text("N/A");
+                $("#itemQut").text("N/A");
             }
         });
     } else {
         // Clear the fields if no item is selected
-        // $("#itemName").text("");
-        // $("#itemQut").text("");
-        // $("#itemPrice").text("");
+        $("#itemName").text("N/A");
+        $("#itemPrice").text("N/A");
+        $("#itemQut").text("N/A");
     }
 });
+
 $(document).ready(function() {
     $("#btnAdd").on('click', function() {
         let item_id = $("#select").val();                      // Get selected item ID
