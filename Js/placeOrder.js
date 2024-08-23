@@ -89,9 +89,9 @@ $("#select").on('change', function() {
                 console.log( response);
 
                 // Update the fields with the item details
-                $("#itemName").text(response.itemName || "");
-                $("#itemPrice").text(response.price || "");
-                $("#itemQut").text(response.qty || "");
+                $("#itemName").text(response.itemName);
+                $("#itemPrice").text(response.price);
+                $("#itemQut").text(response.qty);
             },
             error: function(error) {
                 console.error("Error fetching item details:", error);
@@ -179,6 +179,7 @@ $(document).ready(function() {
         $(this).closest('tr').remove();
         updateNetTotal();
     });
+
 
     function ClearFields() {
         $("#select").val('');
