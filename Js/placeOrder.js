@@ -184,45 +184,121 @@ $(document).ready(function() {
         $(this).closest('tr').remove();
         updateNetTotal();
     });
-    //place order
-    $("#place_Order").on('click',function (){
+    // Place order
+    // Place order
+    $("#place_Order").on('click', function () {
+        // Fetch values from the input fields and text elements
         let amount = parseFloat($('#amount').val());
         let netTotal = parseFloat($('#tot').text());
         let discount = netTotal * 0.20; // Calculate 20% discount
         let order_id = $("#Order_id").val();
-        let finalTotal = netTotal - discount; // Calculate final total after discount
+        let finalTotal = netTotal - discount;
 
-        const orderData ={
-            orderId:order_id,
-            amount:amount,
-            netTotal:netTotal,
-            discount:discount,
-            finalTotal:finalTotal
-        }
-        const orderJson = JSON.stringify(orderData);
+        // Get the selected item details correctly
+        let itemCode = $("#select").val();
+        let customerId = $("#selectCus_ID").val();
+        let itemName = $("#itemName").text();
+        let itemPrice = parseFloat($("#itemPrice").text());
+        let itemQut = parseInt($("#itemQut").text());
 
 
-        $.ajax({
-            url:`http://localhost:8080/orders`,
-            method:"POST",
-            data:orderJson,
-            contentType: "application/json",
-            success:function (response){
+        const orderRequest = {
+            orderData: {
+                orderId: order_id,
+                amount: amount,
+                netTotal: netTotal,
+                discount: discount,
+                finalTotal: finalTotal
+            }
+        };
+
+        let orderSaved = false;
+        let orderDetailsSaved = false;
+
+        // Function to handle success for both requests
+        function handleSuccess() {
+            if (orderSaved || orderDetailsSaved) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'order saved'
+                    title: 'Order and/or Order Details Saved Successfully'
                 });
-                console.log(response);
-            },
-            error:function (error){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'error saving order'
-                });
-                console.log(error);
             }
-        })
-    })
+        }
+
+
+        function handleError() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to Save Order or Order Details'
+            });
+        }
+
+        // Make an AJAX request to save the order
+        $.ajax({
+            url: `http://localhost:8080/orders`,
+            method: "POST",
+            data: JSON.stringify(orderRequest),
+            contentType: "application/json",
+            success: function (response) {
+                console.log(response);
+                orderSaved = true;
+
+                // Proceed to save order details
+                $.ajax({
+                    url: `http://localhost:8080/orderDetails`,
+                    method: "POST",
+                    data: JSON.stringify({
+                        orderId: order_id,
+                        itemCode: itemCode,
+                        itemQut: itemQut,
+                        itemPrice: itemPrice,
+                        customerId: customerId,
+                        itemName: itemName
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        console.log(response);
+                        orderDetailsSaved = true;
+                        handleSuccess();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        orderDetailsSaved = false;
+                        handleSuccess();
+                    }
+                });
+            },
+            error: function (error) {
+                console.log(error);
+                orderSaved = false;
+                $.ajax({
+                    url: `http://localhost:8080/orderDetails`,
+                    method: "POST",
+                    data: JSON.stringify({
+                        orderId: order_id,
+                        itemCode: itemCode,
+                        itemQut: itemQut,
+                        itemPrice: itemPrice,
+                        customerId: customerId,
+                        itemName: itemName
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                        console.log(response);
+                        orderDetailsSaved = true;
+                        handleSuccess();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        orderDetailsSaved = false;
+                        handleError();
+                    }
+                });
+            }
+        });
+    });
+
+
 
 
 
