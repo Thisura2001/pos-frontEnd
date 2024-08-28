@@ -220,7 +220,7 @@ $(document).ready(function() {
             if (orderSaved || orderDetailsSaved) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Order and/or Order Details Saved Successfully'
+                    title: 'Orders Saved Successfully'
                 });
             }
         }
