@@ -224,6 +224,8 @@ $(document).ready(function() {
         })
     })
 
+
+
     function ClearFields() {
         $("#select").val('');
         $("#quantity_placeOrder").val('');
