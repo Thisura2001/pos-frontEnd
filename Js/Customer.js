@@ -4,7 +4,7 @@ const salaryRegex = /^\d+(\.\d{1,2})?$/; // Only numbers and optional decimal po
 const addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/; // Letters, digits, and some special characters allowed
     function loadCustomers() {
         $.ajax({
-            url: 'http://localhost:8080/customer',
+            url: 'http://localhost:8080/api/v1/customers',
             type: 'GET',
             contentType: 'application/json',
             success: function(response) {
@@ -92,7 +92,7 @@ $("#btnCustomerSave").on('click', () => {
     const customerJson = JSON.stringify(customerData);
 
     $.ajax({
-        url: "http://localhost:8080/customer",
+        url: "http://localhost:8080/api/v1/customers",
         type: "POST",
         data: customerJson,
         contentType: "application/json",
@@ -118,7 +118,7 @@ $("#btnCustomerSave").on('click', () => {
     $("#btnCustomerDelete").on('click', () => {
         var customerId = $("#cus_id").val();
         $.ajax({
-            url: `http://localhost:8080/customer?id=${customerId}`,
+            url: `http://localhost:8080/api/v1/customers/${customerId}`,
             type: "DELETE",
             success: function (response) {
                 console.log(response);
@@ -190,7 +190,7 @@ $("#btnCustomerSave").on('click', () => {
         const customerJson = JSON.stringify(customerData);
 
         $.ajax({
-            url: `http://localhost:8080/customer`,
+            url: `http://localhost:8080/api/v1/customers/${customerId}`,
             type: "PUT",
             data: customerJson,
             contentType: "application/json",

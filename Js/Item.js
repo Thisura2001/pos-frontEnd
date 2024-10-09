@@ -5,7 +5,7 @@ const qtyRegex = /^[\d\s]+$/;
 
 function loadItemTable() {
     $.ajax({
-        url:"http://localhost:8080/item",
+        url:"http://localhost:8080/api/v1/items",
         type:"GET",
         contentType:"application/json",
 
@@ -89,7 +89,7 @@ $("#btnItemSave").on('click', () => {
     const itemJson = JSON.stringify(itemData);
 
     $.ajax({
-        url:"http://localhost:8080/item",
+        url:"http://localhost:8080/api/v1/items",
         type:"POST",
         data:itemJson,
         contentType:"application/json",
@@ -115,7 +115,7 @@ $("#btnItemSave").on('click', () => {
 $("#itemBtnDelete").on('click',()=>{
   var itemCode = $("#Item_id").val();
     $.ajax({
-        url:`http://localhost:8080/item?code=${itemCode}`,
+        url:`http://localhost:8080/api/v1/items/${itemCode}`,
         type:"DELETE",
         success:function (result) {
             swal.fire({
@@ -187,7 +187,7 @@ $("#btnItemUpdate").on('click',()=>{
     }
     const itemJson = JSON.stringify(itemData);
     $.ajax({
-        url:`http://localhost:8080/item?code=${itemCode}`,
+        url:`http://localhost:8080/api/v1/items/${itemCode}`,
         type:"PUT",
         data:itemJson,
         contentType:"application/json",
