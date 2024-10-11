@@ -5,7 +5,7 @@ window.onload = function() {
 
 function fetchOrderId() {
     $.ajax({
-        url: "http://localhost:8080/orders", // Replace with your server URL
+        url: "http://localhost:8080/api/v1/orders", // Replace with your server URL
         method: "GET",
         success: function(response) {
             // Assuming response is in the format: { "orderId": "OR-100" }
@@ -24,7 +24,7 @@ $(document).ready(function() {
 
 function cmbCustomer() {
     $.ajax({
-        url: "http://localhost:8080/customer",
+        url: 'http://localhost:8080/api/v1/customers',
         type: "GET",
         success: function(response) {
             console.log(response); // Log the entire response to check its structure
@@ -55,7 +55,7 @@ function cmbCustomer() {
 }
 function cmbItem() {
     $.ajax({
-        url: "http://localhost:8080/item",
+        url: "http://localhost:8080/api/v1/items",
         method: "GET",
         success: function(response) {
             console.log(response);
@@ -88,7 +88,7 @@ $("#select").on('change', function() {
 
     if (selectedItemCode) {
         $.ajax({
-            url: `http://localhost:8080/items?code=${selectedItemCode}`,
+            url: `http://localhost:8080/api/v1/items/${selectedItemCode}`,
             method: "GET",
             success: function(response) {
                 console.log( response);
@@ -185,7 +185,6 @@ $(document).ready(function() {
         updateNetTotal();
     });
     // Place order
-    // Place order
     $("#place_Order").on('click', function () {
         // Fetch values from the input fields and text elements
         let amount = parseFloat($('#amount').val());
@@ -235,7 +234,7 @@ $(document).ready(function() {
 
         // Make an AJAX request to save the order
         $.ajax({
-            url: `http://localhost:8080/orders`,
+            url: `http://localhost:8080/api/v1/orders`,
             method: "POST",
             data: JSON.stringify(orderRequest),
             contentType: "application/json",
