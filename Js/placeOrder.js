@@ -5,17 +5,18 @@ window.onload = function() {
 
 function fetchOrderId() {
     $.ajax({
-        url: "http://localhost:8080/api/v1/orders", // Replace with your server URL
+        url:"http://localhost:8080/api/v1/orders/new-order-id", // Replace with your server URL
         method: "GET",
         success: function(response) {
             // Assuming response is in the format: { "orderId": "OR-100" }
-            $("#Order_id").val(response.orderId);
+            $("#Order_id").val(response);
         },
         error: function(error) {
             console.error("Error fetching order ID:", error);
         }
     });
 }
+
 
 // Call this function when the page loads or when needed
 $(document).ready(function() {
