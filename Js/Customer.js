@@ -1,7 +1,11 @@
-const customerIdRegex = /^\d+$/; // Only digits allowed
+const customerIdRegex =  /^[a-zA-Z0-9\s,.'-]{3,}$/;
 const customerNameRegex = /^[a-zA-Z\s]+$/; // Only letters and spaces allowed
 const salaryRegex = /^\d+(\.\d{1,2})?$/; // Only numbers and optional decimal points allowed
 const addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/; // Letters, digits, and some special characters allowed
+// Call this function when the page loads or when needed
+$(document).ready(function() {
+    fetchOrderId();
+});
     function loadCustomers() {
         $.ajax({
             url: 'http://localhost:8080/api/v1/customers',

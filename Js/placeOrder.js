@@ -22,12 +22,28 @@ function fetchOrderId() {
 $(document).ready(function() {
     fetchOrderId();
 });
+function updateCustomerDropdown(customers) {
+    // Assuming the customer combo box has the id 'selectCus_ID'
+    let customerDropdown = $('#selectCus_ID');
+    customerDropdown.empty();  // Clear the existing options
+
+    // Append new customer options
+    customers.forEach(function(customer) {
+        customerDropdown.append(new Option(customer.name, customer.id));
+    });
+
+    // Optionally, set the selected customer to the newly added customer
+    let lastCustomer = customers[customers.length - 1];  // Get the last customer (recently added)
+    customerDropdown.val(lastCustomer.id);  // Set the new customer as selected
+}
+
 
 function cmbCustomer() {
     $.ajax({
         url: 'http://localhost:8080/api/v1/customers',
         type: "GET",
         success: function(response) {
+            updateCustomerDropdown(response)
             console.log(response); // Log the entire response to check its structure
 
             // Clear existing options in the select element

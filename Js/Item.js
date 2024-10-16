@@ -1,4 +1,4 @@
-const itemCodeRegex = /^\d+$/;
+const itemCodeRegex =  /^[a-zA-Z0-9\s,.'-]{3,}$/;
 const itemNameRegex = /^[a-zA-Z\s]+$/;
 const priceRegex = /^[\d.\s]+$/;
 const qtyRegex = /^[\d\s]+$/;
